@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { fetchAllTransactions } from '../../features/transaction/model/transactionSlice';
+import Table from '../../components/Table';
 
 export default function Transactions() {
   const dispatch = useAppDispatch();
@@ -14,5 +15,9 @@ export default function Transactions() {
     dispatch(fetchAllTransactions());
   }, [dispatch]);
 
-  return <div>Transactions page</div>;
+  return (
+    <>
+      <Table />
+    </>
+  );
 }
