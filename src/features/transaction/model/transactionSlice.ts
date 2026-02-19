@@ -16,8 +16,9 @@ interface TransactionState {
   editTransactionDialogAmount: number | undefined;
   editTransactionDialogCategory: string;
   editTransactionDialogId: string;
-
-  
+  editTransactionDialogNotes: string;
+  editTransactionDialogPaymentType: string;
+  editTransactionDialogType: string;
 }
 
 // Define the initial state using that type
@@ -28,9 +29,9 @@ const initialState: TransactionState = {
   editTransactionDialogId: '',
   editTransactionDialogAmount: undefined,
   editTransactionDialogCategory: '',
-
-
-
+  editTransactionDialogNotes: '',
+  editTransactionDialogPaymentType: '',
+  editTransactionDialogType: '',
 };
 
 export const transactionSlice = createSlice({
@@ -52,10 +53,21 @@ export const transactionSlice = createSlice({
     ) => {
       state.editTransactionDialogCategory = action.payload;
     },
+    setEditTransactionDialogNotes: (state, action: PayloadAction<string>) => {
+      state.editTransactionDialogNotes = action.payload;
+    },
+    setEditTransactionDialogPaymentType: (
+      state,
+      action: PayloadAction<string>,
+    ) => {
+      state.editTransactionDialogPaymentType = action.payload;
+    },
+    setEditTransactionDialogType: (state, action: PayloadAction<string>) => {
+      state.editTransactionDialogType = action.payload;
+    },
     setEditTransactionDialogId: (state, action: PayloadAction<string>) => {
       state.editTransactionDialogId = action.payload;
     },
-
     addTransaction: (state, action: PayloadAction<Transaction>) => {
       state.transactions.push(action.payload);
     },

@@ -23,7 +23,6 @@ import {
   setEditTransactionDialogType,
 } from '../../features/transaction/model/transactionSlice';
 import EditTransactionDialog from '../EditTransactionDialog';
-import { Payment, type Note } from '@mui/icons-material';
 
 export default function BasicTable() {
   const dispatch = useDispatch();
@@ -54,7 +53,6 @@ export default function BasicTable() {
         dispatch(setEditTransactionDialogNotes(notes));
         dispatch(setEditTransactionDialogPaymentType(paymentType));
         dispatch(setEditTransactionDialogType(type));
-
         dispatch(setEditTransactionDialogIsOpen(true));
       }
     };

@@ -10,6 +10,9 @@ import {
   setEditTransactionDialogAmount,
   setEditTransactionDialogCategory,
   editTransaction,
+  setEditTransactionDialogNotes,
+  setEditTransactionDialogPaymentType,
+  setEditTransactionDialogType,
 } from '../../features/transaction/model/transactionSlice';
 import { useAppSelector } from '../../app/hooks';
 import TextField from '@mui/material/TextField';
@@ -29,6 +32,16 @@ export default function AlertDialog() {
   const editTransactionDialogId: string = useAppSelector(
     (state: RootState) => state.transaction.editTransactionDialogId,
   );
+  const editTransactionDialogNotes: string = useAppSelector(
+    (state: RootState) => state.transaction.editTransactionDialogNotes,
+  );
+  const editTransactionDialogPaymentType: string = useAppSelector(
+    (state: RootState) => state.transaction.editTransactionDialogPaymentType,
+  );
+  const editTransactionDialogType: string = useAppSelector(
+    (state: RootState) => state.transaction.editTransactionDialogType,
+  );
+
   const handleClose = () => {
     dispatch(setEditTransactionDialogAmount(0));
     dispatch(setEditTransactionDialogCategory(''));
@@ -41,6 +54,9 @@ export default function AlertDialog() {
       createdAt: now,
       amount: editTransactionDialogAmount || 0,
       category: editTransactionDialogCategory,
+      notes: editTransactionDialogNotes,
+      paymentType: editTransactionDialogPaymentType,
+      type: editTransactionDialogType,
     } as Transaction;
     console.log('newTransaction', newTransaction);
     dispatch(editTransaction(newTransaction));
@@ -59,6 +75,21 @@ export default function AlertDialog() {
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setEditTransactionDialogCategory(event.target.value));
   };
+  const handleCategoryNotesChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    dispatch(setEditTransactionDialogNotes(event.target.value));
+  };
+  const handleCategoryPaymentTypeChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    dispatch(setEditTransactionDialogPaymentType(event.target.value));
+  };
+  const handleCategoryTypeChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    dispatch(setEditTransactionDialogType(event.target.value));
+  };
 
   return (
     <>
@@ -68,6 +99,11 @@ export default function AlertDialog() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
+        <img
+          src="./Images/AddExpense.png"
+          alt="Note"
+          style={{ width: '100%', height: 'auto' }}
+        />
         <DialogTitle id="alert-dialog-title">{'Add Expense'}</DialogTitle>
         <DialogContent>
           <TextField
@@ -84,6 +120,27 @@ export default function AlertDialog() {
             margin="dense"
             value={editTransactionDialogCategory}
             onChange={handleCategoryChange}
+          />
+          <TextField
+            label="Notes"
+            fullWidth
+            margin="dense"
+            value={editTransactionDialogNotes}
+            onChange={handleCategoryNotesChange}
+          />
+          <TextField
+            label="Payment Type"
+            fullWidth
+            margin="dense"
+            value={editTransactionDialogPaymentType}
+            onChange={handleCategoryPaymentTypeChange}
+          />
+          <TextField
+            label="Type"
+            fullWidth
+            margin="dense"
+            value={editTransactionDialogType}
+            onChange={handleCategoryTypeChange}
           />
         </DialogContent>
         <DialogActions>
