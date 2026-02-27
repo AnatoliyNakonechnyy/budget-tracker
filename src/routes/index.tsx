@@ -1,38 +1,44 @@
-import { createBrowserRouter } from "react-router";
-import Layout from "../layouts";
-import NotFound from "../pages/NotFound";
-import Transactions from "../pages/Transactions";
-import Registration from "../pages/Registration";
-import LoginForm from "../features/auth/components/LoginForm";
+import { createBrowserRouter, Navigate } from 'react-router';
+import Layout from '../layouts';
+import Registration from '../pages/Registration';
+import LoginForm from '../features/auth/components/LoginForm';
+import Reports from '../pages/Reports';
+import Profile from '../pages/Profile';
+import ExpenseList from '../pages/ExpenseList';
+import Onboarding from '../pages/Onboarding';
+import NotFound from '../pages/NotFound';
+import Dashboard from '../pages/Dashboard';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: (
-      <Layout />
-    ),
+    element: <Layout />,
     children: [
       {
         path: '',
-        element: <div>Home page</div>,
+        element: <Navigate to="/onboarding" replace />,
       },
       {
         path: 'profile',
-        element: <div>Profile page</div>,
+        element: <Profile />,
       },
       {
-        path: 'transactions',
-        element: <Transactions />,
+        path: 'dashboard',
+        element: <Dashboard />,
       },
       {
         path: 'reports',
-        element: <div>Reports page</div>,
+        element: <Reports />,
+      },
+      {
+        path: 'expenses',
+        element: <ExpenseList />,
       },
     ],
   },
   {
     path: 'onboarding',
-    element: <div>Onboarding page</div>,
+    element: <Onboarding />,
   },
   {
     path: 'login',

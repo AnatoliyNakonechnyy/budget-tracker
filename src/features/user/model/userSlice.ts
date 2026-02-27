@@ -24,7 +24,6 @@ interface UserState {
   loading: 'idle' | 'pending' | 'succeeded' | 'failed';
 }
 
-// Define the initial state using that type
 const initialState: UserState = {
   user: null,
   loading: 'idle',
@@ -57,7 +56,6 @@ export const userSlice = createSlice({
       state.loading = 'pending';
     });
     builder.addCase(fetchUser.fulfilled, (state, action) => {
-      // Assuming the API returns an array of users, we take the first one for simplicity
       console.log('Fetched users:', action.payload);
       state.user = action.payload || null;
       state.loading = 'succeeded';
@@ -69,8 +67,5 @@ export const userSlice = createSlice({
 });
 
 export const { setUser, clearUser } = userSlice.actions;
-
-// Other code such as selectors can use the imported `RootState` type
 export const selectUser = (state: RootState) => state.user.user;
-
 export default userSlice.reducer;

@@ -1,17 +1,18 @@
+import * as React from 'react';
+import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import type { Transaction } from '../../features/transaction/model/types';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import type { RootState } from '../../app/store';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import type { Transaction } from '../../features/transaction/model/types';
-import { useAppSelector } from '../../app/hooks';
-import { useDispatch } from 'react-redux';
-import type { RootState } from '../../app/store';
 import {
   removeTransaction,
   setEditTransactionDialogIsOpen,
@@ -23,16 +24,86 @@ import {
   setEditTransactionDialogType,
 } from '../../features/transaction/model/transactionSlice';
 import EditTransactionDialog from '../EditTransactionDialog';
+import { fetchDeleteTransactionThunk } from '../../features/transaction/model/transactionSlice';
 
-export default function BasicTable() {
-  const dispatch = useDispatch();
-  const transactions: Transaction[] = useAppSelector(
+interface Column {
+  id:
+    | 'createdAt'
+    | 'amount'
+    | 'category'
+    | 'notes'
+    | 'paymentType'
+    | 'type'
+    | 'action';
+  label: string;
+  minWidth?: number;
+  align?: 'right';
+  format?: (value: number) => string;
+}
+
+const columns: readonly Column[] = [
+  { id: 'createdAt', label: 'DATE', minWidth: 140 },
+  {
+    id: 'amount',
+    label: 'AMOUNT',
+    minWidth: 100,
+    align: 'right',
+    format: (value: number) => value.toFixed(2),
+  },
+  {
+    id: 'category',
+    label: 'CATEGORY',
+    minWidth: 100,
+  },
+  {
+    id: 'notes',
+    label: 'NOTES',
+    minWidth: 170,
+    align: 'right',
+  },
+  {
+    id: 'paymentType',
+    label: 'PAYMENT',
+    minWidth: 100,
+    align: 'right',
+  },
+  {
+    id: 'type',
+    label: 'TYPE',
+    minWidth: 100,
+    align: 'right',
+  },
+  {
+    id: 'action',
+    label: 'ACTIONS',
+    minWidth: 50,
+    align: 'right',
+  },
+];
+
+export default function StickyHeadTable() {
+  const dispatch = useAppDispatch();
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const rows: Transaction[] = useAppSelector(
     (state: RootState) => state.transaction.transactions,
   );
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   const handleDeleteItem = (id: string | undefined) => {
     if (id) {
       dispatch(removeTransaction(id));
+      dispatch(fetchDeleteTransactionThunk(id));
     }
   };
 
@@ -58,60 +129,78 @@ export default function BasicTable() {
     };
 
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <TableContainer sx={{ maxHeight: 440 }}>
+        <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              <TableCell>DATE</TableCell>
-              <TableCell align="right">AMOUNT</TableCell>
-              <TableCell align="right">CATEGORY</TableCell>
-              <TableCell align="right">NOTES</TableCell>
-              <TableCell align="right">PAYMENT</TableCell>
-              <TableCell align="right">TYPE</TableCell>
-              <TableCell align="right">ACTIONS</TableCell>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {transactions.map((row) => (
-              <TableRow
-                key={row.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.createdAt}
-                </TableCell>
-                <TableCell align="right">{row.amount}</TableCell>
-                <TableCell align="right">{row.category}</TableCell>
-                <TableCell align="right">{row.notes}</TableCell>
-                <TableCell align="right">{row.paymentType}</TableCell>
-                <TableCell align="right">{row.type}</TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={handleEditItem(
-                      row.id,
-                      row.amount,
-                      row.category,
-                      row.notes,
-                      row.paymentType,
-                      row.type,
-                    )}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => handleDeleteItem(row.id)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {rows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                    {columns.map((column) => {
+                      const value =
+                        column.id === 'action' ? '' : row[column.id];
+                      return (
+                        <TableCell key={column.id} align={column.align}>
+                          {column.id === 'action' ? (
+                            <>
+                              <IconButton
+                                onClick={handleEditItem(
+                                  row.id,
+                                  row.amount,
+                                  row.category,
+                                  row.notes,
+                                  row.paymentType,
+                                  row.type,
+                                )}
+                              >
+                                <EditIcon />
+                              </IconButton>
+                              <IconButton
+                                color="error"
+                                onClick={() => handleDeleteItem(row.id)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </>
+                          ) : column.format && typeof value === 'number' ? (
+                            column.format(value)
+                          ) : (
+                            value
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25, 100]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <EditTransactionDialog />
-    </>
+    </Paper>
   );
 }

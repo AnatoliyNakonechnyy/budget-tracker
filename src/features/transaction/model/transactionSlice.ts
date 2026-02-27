@@ -2,11 +2,31 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Transaction } from './types';
 import type { RootState } from '../../../app/store';
-import { fetchTransactions } from '../api';
+import {
+  fetchTransactions,
+  fetchDeleteTransaction,
+  fetchPutTransaction,
+  fetchPostTransaction,
+} from '../api';
 
-export const fetchAllTransactions = createAsyncThunk(
+export const fetchTransactionsThunk = createAsyncThunk(
   'transactions/fetchAll',
   fetchTransactions,
+);
+
+export const fetchDeleteTransactionThunk = createAsyncThunk(
+  'transactions/fetchDelete',
+  fetchDeleteTransaction,
+);
+
+export const fetchPutTransactionThunk = createAsyncThunk(
+  'transactions/fetchPut',
+  fetchPutTransaction,
+);
+
+export const fetchPostTransactionThunk = createAsyncThunk(
+  'transactions/fetchPost',
+  fetchPostTransaction,
 );
 
 interface TransactionState {
@@ -86,15 +106,43 @@ export const transactionSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchAllTransactions.pending, (state) => {
+    builder.addCase(fetchTransactionsThunk.pending, (state) => {
       state.loading = 'pending';
     });
-    builder.addCase(fetchAllTransactions.fulfilled, (state, action) => {
+    builder.addCase(fetchTransactionsThunk.fulfilled, (state, action) => {
       state.transactions = action.payload;
       state.loading = 'succeeded';
     });
-    builder.addCase(fetchAllTransactions.rejected, (state) => {
+    builder.addCase(fetchTransactionsThunk.rejected, (state) => {
       state.loading = 'failed';
+    });
+    builder.addCase(fetchDeleteTransactionThunk.fulfilled, (state) => {
+      state.loading = 'succeeded';
+    });
+    builder.addCase(fetchDeleteTransactionThunk.rejected, (state) => {
+      state.loading = 'failed';
+    });
+    builder.addCase(fetchDeleteTransactionThunk.pending, (state) => {
+      state.loading = 'pending';
+    });
+    builder.addCase(fetchPutTransactionThunk.fulfilled, (state) => {
+      state.loading = 'succeeded';
+    });
+    builder.addCase(fetchPutTransactionThunk.rejected, (state) => {
+      state.loading = 'failed';
+    });
+    builder.addCase(fetchPutTransactionThunk.pending, (state) => {
+      state.loading = 'pending';
+    });
+    builder.addCase(fetchPostTransactionThunk.fulfilled, (state, action) => {
+      state.transactions.push(action.payload);
+      state.loading = 'succeeded';
+    });
+    builder.addCase(fetchPostTransactionThunk.rejected, (state) => {
+      state.loading = 'failed';
+    });
+    builder.addCase(fetchPostTransactionThunk.pending, (state) => {
+      state.loading = 'pending';
     });
   },
 });

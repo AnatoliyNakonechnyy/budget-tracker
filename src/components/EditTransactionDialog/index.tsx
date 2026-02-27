@@ -4,25 +4,31 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import type { RootState } from '../../app/store';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import TextField from '@mui/material/TextField';
+import type { Transaction } from '../../features/transaction/model/types';
+import LocalAtmRoundedIcon from '@mui/icons-material/LocalAtmRounded';
 import {
   setEditTransactionDialogIsOpen,
   setEditTransactionDialogAmount,
   setEditTransactionDialogCategory,
   editTransaction,
+  addTransaction,
   setEditTransactionDialogNotes,
   setEditTransactionDialogPaymentType,
   setEditTransactionDialogType,
+  setEditTransactionDialogId,
+  fetchPutTransactionThunk,
+  fetchPostTransactionThunk,
 } from '../../features/transaction/model/transactionSlice';
-import { useAppSelector } from '../../app/hooks';
-import TextField from '@mui/material/TextField';
-import type { Transaction } from '../../features/transaction/model/types';
 
 export default function AlertDialog() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+
   const editTransactionDialogIsOpen: boolean = useAppSelector(
     (state: RootState) => state.transaction.editTransactionDialogIsOpen,
   );
+
   const editTransactionDialogAmount: number | undefined = useAppSelector(
     (state: RootState) => state.transaction.editTransactionDialogAmount,
   );
@@ -43,12 +49,12 @@ export default function AlertDialog() {
   );
 
   const handleClose = () => {
-    dispatch(setEditTransactionDialogAmount(0));
-    dispatch(setEditTransactionDialogCategory(''));
-    dispatch(setEditTransactionDialogIsOpen(false));
+    actionForClose();
   };
+
   const handleAddEdit = () => {
     const now = new Date().toISOString();
+
     const newTransaction = {
       id: editTransactionDialogId,
       createdAt: now,
@@ -58,13 +64,29 @@ export default function AlertDialog() {
       paymentType: editTransactionDialogPaymentType,
       type: editTransactionDialogType,
     } as Transaction;
-    console.log('newTransaction', newTransaction);
-    dispatch(editTransaction(newTransaction));
 
+    if (newTransaction.id === '') {
+      dispatch(fetchPostTransactionThunk(newTransaction));
+      //newTransaction.id = editTransactionDialogId;
+      //dispatch(addTransaction(newTransaction));
+    } else {
+      dispatch(editTransaction(newTransaction));
+      dispatch(fetchPutTransactionThunk(newTransaction));
+    }
+
+    actionForClose();
+  };
+
+  function actionForClose() {
+    dispatch(setEditTransactionDialogId(''));
     dispatch(setEditTransactionDialogAmount(0));
     dispatch(setEditTransactionDialogCategory(''));
+    dispatch(setEditTransactionDialogNotes(''));
+    dispatch(setEditTransactionDialogPaymentType(''));
+    dispatch(setEditTransactionDialogType(''));
     dispatch(setEditTransactionDialogIsOpen(false));
-  };
+  }
+
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(
       setEditTransactionDialogAmount(
@@ -99,11 +121,7 @@ export default function AlertDialog() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <img
-          src="./Images/AddExpense.png"
-          alt="Note"
-          style={{ width: '100%', height: 'auto' }}
-        />
+        <LocalAtmRoundedIcon />
         <DialogTitle id="alert-dialog-title">{'Add Expense'}</DialogTitle>
         <DialogContent>
           <TextField
