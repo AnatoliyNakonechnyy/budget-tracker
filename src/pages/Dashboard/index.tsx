@@ -9,6 +9,28 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import { styled } from '@mui/material/styles';
+import LinearProgress, {
+  linearProgressClasses,
+} from '@mui/material/LinearProgress';
+
+const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  height: 10,
+  borderRadius: 5,
+  [`&.${linearProgressClasses.colorPrimary}`]: {
+    backgroundColor: theme.palette.grey[200],
+    ...theme.applyStyles('dark', {
+      backgroundColor: theme.palette.grey[800],
+    }),
+  },
+  [`& .${linearProgressClasses.bar}`]: {
+    borderRadius: 5,
+    backgroundColor: '#1a90ff',
+    ...theme.applyStyles('dark', {
+      backgroundColor: '#308fe8',
+    }),
+  },
+}));
 
 export default function Transactions() {
   const dispatch = useAppDispatch();
@@ -42,6 +64,7 @@ export default function Transactions() {
               <Typography variant="h4" component="div">
                 $2,345.67
               </Typography>
+              <BorderLinearProgress variant="determinate" value={50} />
             </CardContent>
           </Card>
           <Card sx={{ minWidth: 275 }}>
@@ -52,6 +75,7 @@ export default function Transactions() {
               <Typography variant="h4" component="div">
                 $2,345.67
               </Typography>
+              <BorderLinearProgress variant="determinate" value={75} />
             </CardContent>
           </Card>
         </Box>

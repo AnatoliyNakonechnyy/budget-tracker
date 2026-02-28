@@ -1,3 +1,11 @@
+import Typography from '@mui/material/Typography';
+
 export default function Reports() {
-  return <div>Reports</div>;
+  return (
+    <>
+      <Typography variant="h5" component="div">
+        Reports & Trends
+      </Typography>
+    </>
+  );
 }

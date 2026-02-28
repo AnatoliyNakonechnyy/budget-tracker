@@ -1,20 +1,41 @@
 import { PieChart } from '@mui/x-charts/PieChart';
-
-const data = [
-  { label: 'Group A', value: 400, color: '#0088FE' },
-  { label: 'Group B', value: 300, color: '#00C49F' },
-  { label: 'Group C', value: 300, color: '#FFBB28' },
-  { label: 'Group D', value: 200, color: '#FF8042' },
-];
-
-const settings = {
-  margin: { right: 5 },
-  width: 200,
-  height: 200,
-  hideLegend: true,
-};
+import type { Transaction } from '../../features/transaction/model/types';
+import { useAppSelector } from '../../app/hooks';
+import type { RootState } from '../../app/store';
 
 export default function DonutChart() {
+  const transactions: Transaction[] = useAppSelector(
+    (state: RootState) => state.transaction.transactions,
+  );
+
+  type DataItem = { label: string; value: number; color: string };
+
+  const data = transactions.reduce<DataItem[]>(
+    (accumulator, transaction: Transaction) => {
+      const existingCategory = accumulator.find(
+        (item) => item.label === transaction.category,
+      );
+      if (existingCategory) {
+        existingCategory.value += transaction.amount;
+      } else {
+        accumulator.push({
+          label: transaction.category,
+          value: transaction.amount,
+          color: accumulator.length % 2 === 0 ? '#0088FE' : '#FF8042',
+        });
+      }
+      return accumulator;
+    },
+    [],
+  );
+
+  const settings = {
+    margin: { right: 5 },
+    width: 200,
+    height: 200,
+    hideLegend: true,
+  };
+
   return (
     <PieChart
       series={[{ innerRadius: 50, outerRadius: 100, data, arcLabel: 'value' }]}

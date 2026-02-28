@@ -31,7 +31,7 @@ export default function Onboarding() {
           <CardMedia
             component="img"
             image={logo}
-            sx={{ width: '50%', height: 'auto' }}
+            sx={{ width: '20%', height: 'auto' }}
             alt="Logo"
           />
 

@@ -50,9 +50,11 @@ export default function Header() {
                 <HomeIcon />
               </IconButton>
             </Tooltip>
-            <IconButton onClick={handleAdd}>
-              <AddCircleOutlineIcon />
-            </IconButton>
+            <Tooltip title="Add transaction">
+              <IconButton onClick={handleAdd}>
+                <AddCircleOutlineIcon />
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Expense List">
               <IconButton onClick={handleExpenseList}>
                 <ArticleIcon />
