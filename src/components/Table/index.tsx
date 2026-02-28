@@ -23,7 +23,6 @@ import {
   setEditTransactionDialogPaymentType,
   setEditTransactionDialogType,
 } from '../../features/transaction/model/transactionSlice';
-import EditTransactionDialog from '../EditTransactionDialog';
 import { fetchDeleteTransactionThunk } from '../../features/transaction/model/transactionSlice';
 
 interface Column {
@@ -200,7 +199,6 @@ export default function StickyHeadTable() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <EditTransactionDialog />
     </Paper>
   );
 }
