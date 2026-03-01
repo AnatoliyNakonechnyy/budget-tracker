@@ -88,6 +88,13 @@ export default function StickyHeadTable() {
     (state: RootState) => state.transaction.transactions,
   );
 
+  const searchString: string = useAppSelector(
+    (state: RootState) => state.listSettings.searchString,
+  );
+  const filteredRows = rows.filter((item) =>
+    item.notes.toLowerCase().includes(searchString.toLowerCase()),
+  );
+
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -145,7 +152,7 @@ export default function StickyHeadTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {filteredRows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (

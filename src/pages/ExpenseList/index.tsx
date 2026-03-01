@@ -6,9 +6,21 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import type { RootState } from '../../app/store';
+import { setSearchString } from '../../features/listSettings/model/listSettingsSlice';
 
 export default function ExpenseList() {
-  const searchTerm = '';
+  const dispatch = useAppDispatch();
+
+  const searchString: string = useAppSelector(
+    (state: RootState) => state.listSettings.searchString,
+  );
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearchString(event.target.value));
+  };
+
   return (
     <>
       <Box
@@ -23,11 +35,11 @@ export default function ExpenseList() {
         </Typography>
         <TextField
           sx={{ ml: 5, mr: 5 }}
-          label="Поиск"
+          label="Search"
           variant="outlined"
           size="small"
-          value={searchTerm}
-          onChange={() => {}}
+          value={searchString}
+          onChange={handleSearchChange}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">

@@ -41,7 +41,6 @@ interface TransactionState {
   editTransactionDialogType: string;
 }
 
-// Define the initial state using that type
 const initialState: TransactionState = {
   transactions: [],
   loading: 'idle',
