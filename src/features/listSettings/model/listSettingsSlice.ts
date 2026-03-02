@@ -1,17 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { RootState } from '../../../app/store';
 
 interface ListSettingsState {
   searchString: string;
-  sortNewest: boolean;
+  sort: string;
   dataRange: boolean;
+  sortDialogIsOpen: boolean;
+  filterDialogIsOpen: boolean;
 }
 
 const initialState: ListSettingsState = {
   searchString: '',
-  sortNewest: false,
+  sort: 'Newest',
   dataRange: false,
+  sortDialogIsOpen: false,
+  filterDialogIsOpen: false,
 };
 
 export const listSettingsSlice = createSlice({
@@ -21,16 +24,27 @@ export const listSettingsSlice = createSlice({
     setSearchString: (state, action: PayloadAction<string>) => {
       state.searchString = action.payload;
     },
-    setSortNewest: (state, action: PayloadAction<boolean>) => {
-      state.sortNewest = action.payload;
+    setSort: (state, action: PayloadAction<string>) => {
+      state.sort = action.payload;
     },
     setDataRange: (state, action: PayloadAction<boolean>) => {
       state.dataRange = action.payload;
     },
+    setSortDialogIsOpen: (state, action: PayloadAction<boolean>) => {
+      state.sortDialogIsOpen = action.payload;
+    },
+    setFilterDialogIsOpen: (state, action: PayloadAction<boolean>) => {
+      state.filterDialogIsOpen = action.payload;
+    },
   },
 });
 
-export const { setSearchString, setSortNewest, setDataRange } =
-  listSettingsSlice.actions;
+export const {
+  setSearchString,
+  setSort,
+  setDataRange,
+  setFilterDialogIsOpen,
+  setSortDialogIsOpen,
+} = listSettingsSlice.actions;
 
 export default listSettingsSlice.reducer;

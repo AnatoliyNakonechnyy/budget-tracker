@@ -13,7 +13,6 @@ import {
   setEditTransactionDialogAmount,
   setEditTransactionDialogCategory,
   editTransaction,
-  addTransaction,
   setEditTransactionDialogNotes,
   setEditTransactionDialogPaymentType,
   setEditTransactionDialogType,
@@ -67,8 +66,6 @@ export default function AlertDialog() {
 
     if (newTransaction.id === '') {
       dispatch(fetchPostTransactionThunk(newTransaction));
-      //newTransaction.id = editTransactionDialogId;
-      //dispatch(addTransaction(newTransaction));
     } else {
       dispatch(editTransaction(newTransaction));
       dispatch(fetchPutTransactionThunk(newTransaction));

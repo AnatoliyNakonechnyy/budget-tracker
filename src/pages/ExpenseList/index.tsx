@@ -8,7 +8,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import type { RootState } from '../../app/store';
-import { setSearchString } from '../../features/listSettings/model/listSettingsSlice';
+import {
+  setFilterDialogIsOpen,
+  setSearchString,
+  setSortDialogIsOpen,
+} from '../../features/listSettings/model/listSettingsSlice';
 
 export default function ExpenseList() {
   const dispatch = useAppDispatch();
@@ -21,6 +25,12 @@ export default function ExpenseList() {
     dispatch(setSearchString(event.target.value));
   };
 
+  const handleOpenSort = () => {
+    dispatch(setSortDialogIsOpen(true));
+  };
+  const handleOpenFilter = () => {
+    dispatch(setFilterDialogIsOpen(true));
+  };
   return (
     <>
       <Box
@@ -50,8 +60,8 @@ export default function ExpenseList() {
           fullWidth
         />
         <ButtonGroup variant="outlined" aria-label="Basic button group">
-          <Button onClick={() => {}}>FILTRE</Button>
-          <Button onClick={() => {}}>SORT</Button>
+          <Button onClick={handleOpenFilter}>FILTER</Button>
+          <Button onClick={handleOpenSort}>SORT</Button>
         </ButtonGroup>
       </Box>
 
