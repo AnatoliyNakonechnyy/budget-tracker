@@ -24,6 +24,7 @@ import {
   setEditTransactionDialogType,
 } from '../../features/transaction/model/transactionSlice';
 import { fetchDeleteTransactionThunk } from '../../features/transaction/model/transactionSlice';
+import type { Dayjs } from 'dayjs';
 
 interface Column {
   id:
@@ -87,13 +88,112 @@ export default function StickyHeadTable() {
   const rows: Transaction[] = useAppSelector(
     (state: RootState) => state.transaction.transactions,
   );
-
   const searchString: string = useAppSelector(
     (state: RootState) => state.listSettings.searchString,
   );
   const filteredRows = rows.filter((item) =>
     item.notes.toLowerCase().includes(searchString.toLowerCase()),
   );
+  const amountRange499: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.amountRange499,
+  );
+  const amountRange999: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.amountRange999,
+  );
+  const amountRange1999: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.amountRange1999,
+  );
+  const amountRange2000: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.amountRange2000,
+  );
+  const amountFilteredRows = filteredRows.filter((item) => {
+    if (
+      !amountRange499 &&
+      !amountRange999 &&
+      !amountRange1999 &&
+      !amountRange2000
+    ) {
+      return true;
+    }
+    if (amountRange499 && item.amount < 500) return true;
+    if (amountRange999 && item.amount >= 500 && item.amount < 1000) return true;
+    if (amountRange1999 && item.amount >= 1000 && item.amount < 2000)
+      return true;
+    if (amountRange2000 && item.amount >= 2000) return true;
+    return false;
+  });
+
+  const paymentCard: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.paymentCard,
+  );
+  const paymentCash: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.paymentCash,
+  );
+  const paymentUPI: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.paymentUPI,
+  );
+  const paymentPayLater: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.paymentPayLater,
+  );
+
+  const paymentFilteredRows = amountFilteredRows.filter((item) => {
+    if (!paymentCard && !paymentCash && !paymentUPI && !paymentPayLater) {
+      return true;
+    }
+    if (paymentCard && item.paymentType.toLowerCase() === 'card') return true;
+    if (paymentCash && item.paymentType.toLowerCase() === 'cash') return true;
+    if (paymentUPI && item.paymentType.toLowerCase() === 'upi') return true;
+    if (paymentPayLater && item.paymentType.toLowerCase() === 'pay later')
+      return true;
+    return false;
+  });
+
+  const categoryGroceries: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.categoryGroceries,
+  );
+  const categoryDining: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.categoryDining,
+  );
+  const categoryTransport: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.categoryTransport,
+  );
+  const categoryRent: boolean = useAppSelector(
+    (state: RootState) => state.listSettings.categoryRent,
+  );
+
+  const categoryFilteredRows = paymentFilteredRows.filter((item) => {
+    if (
+      !categoryGroceries &&
+      !categoryDining &&
+      !categoryTransport &&
+      !categoryRent
+    ) {
+      return true;
+    }
+    if (categoryGroceries && item.category.toLowerCase() === 'groceries')
+      return true;
+    if (categoryDining && item.category.toLowerCase() === 'dining') return true;
+    if (categoryTransport && item.category.toLowerCase() === 'transport')
+      return true;
+    if (categoryRent && item.category.toLowerCase() === 'rent') return true;
+    return false;
+  });
+
+  const valueDatePicker: Dayjs | null = useAppSelector(
+    (state: RootState) => state.listSettings.dataPick,
+  );
+
+  const dateFilteredRows = categoryFilteredRows.filter((item) => {
+    // if no date selected, don't filter by date
+    if (!valueDatePicker) return true;
+    const itemDate = new Date(item.createdAt);
+    const selectedDate = valueDatePicker.toDate();
+    return (
+      itemDate.getFullYear() === selectedDate.getFullYear() &&
+      itemDate.getMonth() === selectedDate.getMonth() &&
+      itemDate.getDate() === selectedDate.getDate()
+    );
+  });
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -152,7 +252,7 @@ export default function StickyHeadTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredRows
+            {dateFilteredRows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
