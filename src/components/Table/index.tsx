@@ -142,6 +142,7 @@ export default function StickyHeadTable() {
     }
     if (paymentCard && item.paymentType.toLowerCase() === 'card') return true;
     if (paymentCash && item.paymentType.toLowerCase() === 'cash') return true;
+
     if (paymentUPI && item.paymentType.toLowerCase() === 'upi') return true;
     if (paymentPayLater && item.paymentType.toLowerCase() === 'pay later')
       return true;
@@ -194,6 +195,72 @@ export default function StickyHeadTable() {
       itemDate.getDate() === selectedDate.getDate()
     );
   });
+
+  const dataRange: string = useAppSelector(
+    (state: RootState) => state.listSettings.dataRange,
+  );
+  const rangeFilteredRows = dateFilteredRows.filter((item) => {
+    if (valueDatePicker) return true;
+
+    if (dataRange === 'Today') {
+      const itemDate = new Date(item.createdAt);
+      const now = new Date();
+      return (
+        itemDate.getFullYear() === now.getFullYear() &&
+        itemDate.getMonth() === now.getMonth() &&
+        itemDate.getDate() === now.getDate()
+      );
+    }
+
+    if (dataRange === 'ThisWeek') {
+      const itemDate = new Date(item.createdAt);
+      const now = new Date();
+      const firstDayOfWeek = new Date(
+        now.setDate(now.getDate() - now.getDay()),
+      );
+      const lastDayOfWeek = new Date(
+        now.setDate(now.getDate() - now.getDay() + 6),
+      );
+      return itemDate >= firstDayOfWeek && itemDate <= lastDayOfWeek;
+    }
+
+    if (dataRange === 'ThisMonth') {
+      const itemDate = new Date(item.createdAt);
+      const now = new Date();
+      return (
+        itemDate.getFullYear() === now.getFullYear() &&
+        itemDate.getMonth() === now.getMonth()
+      );
+    }
+
+    if (dataRange === 'PreviousMonth') {
+      const itemDate = new Date(item.createdAt);
+      const now = new Date();
+      const previousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      return (
+        itemDate.getFullYear() === previousMonth.getFullYear() &&
+        itemDate.getMonth() === previousMonth.getMonth()
+      );
+    }
+  });
+
+  const sort = useAppSelector((state: RootState) => state.listSettings.sort);
+
+  if (sort === 'Newest') {
+    rangeFilteredRows.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+  } else if (sort === 'Oldest') {
+    rangeFilteredRows.sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
+  } else if (sort === 'PriceHighToLow') {
+    rangeFilteredRows.sort((a, b) => b.amount - a.amount);
+  } else if (sort === 'PriceLowToHigh') {
+    rangeFilteredRows.sort((a, b) => a.amount - b.amount);
+  }
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -252,7 +319,7 @@ export default function StickyHeadTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dateFilteredRows
+            {rangeFilteredRows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
