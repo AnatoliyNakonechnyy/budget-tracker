@@ -25,6 +25,13 @@ import {
 } from '../../features/transaction/model/transactionSlice';
 import { fetchDeleteTransactionThunk } from '../../features/transaction/model/transactionSlice';
 import type { Dayjs } from 'dayjs';
+import calendar from '../../asset/calendar.svg';
+import action from '../../asset/action.svg';
+import payment from '../../asset/payment.svg';
+import category from '../../asset/category.svg';
+import amount from '../../asset/amount.svg';
+import notes from '../../asset/notes.svg';
+import typePayment from '../../asset/type.svg';
 
 interface Column {
   id:
@@ -39,45 +46,52 @@ interface Column {
   minWidth?: number;
   align?: 'right';
   format?: (value: number) => string;
+  icon?: string;
 }
 
 const columns: readonly Column[] = [
-  { id: 'createdAt', label: 'DATE', minWidth: 140 },
+  { id: 'createdAt', label: 'DATE', minWidth: 140, icon: calendar },
   {
     id: 'amount',
     label: 'AMOUNT',
     minWidth: 100,
     align: 'right',
     format: (value: number) => value.toFixed(2),
+    icon: amount,
   },
   {
     id: 'category',
     label: 'CATEGORY',
     minWidth: 100,
+    icon: category,
   },
   {
     id: 'notes',
     label: 'NOTES',
     minWidth: 170,
     align: 'right',
+    icon: notes,
   },
   {
     id: 'paymentType',
     label: 'PAYMENT',
     minWidth: 100,
     align: 'right',
+    icon: payment,
   },
   {
     id: 'type',
     label: 'TYPE',
     minWidth: 100,
     align: 'right',
+    icon: typePayment,
   },
   {
     id: 'action',
     label: 'ACTIONS',
     minWidth: 50,
     align: 'right',
+    icon: action,
   },
 ];
 
@@ -311,8 +325,17 @@ export default function StickyHeadTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{
+                    minWidth: column.minWidth,
+                    color: '#1976d2',
+                    fontWeight: 'bold',
+                  }}
                 >
+                  <img
+                    src={column.icon}
+                    alt="icon"
+                    style={{ width: 15, height: 15 }}
+                  />
                   {column.label}
                 </TableCell>
               ))}

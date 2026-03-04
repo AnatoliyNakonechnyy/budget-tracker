@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { setEditTransactionDialogIsOpen } from '../../features/transaction/model/transactionSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
+import Icon from '@mui/material/Icon';
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -38,9 +39,13 @@ export default function Header() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton>
-              <img src={logo} alt="logo" style={{ width: 40, height: 40 }} />
-            </IconButton>
+            <Icon>
+              <img
+                src={logo}
+                alt="logo"
+                style={{ width: 30, height: 30, marginRight: 5 }}
+              />
+            </Icon>
 
             <Typography variant="h6" component="div">
               FinSight
