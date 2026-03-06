@@ -7,9 +7,33 @@ import BasicLineChart from '../../components/BasicLineChart';
 import DonutChart from '../../components/DonutChart';
 import SimpleBarChart from '../../components/SimpleBarChart';
 import HorizontalBars from '../../components/HorizontalBars';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import type { RootState } from '../../app/store';
+import { Dayjs } from 'dayjs';
+import { useRef } from 'react';
+import dayjs from 'dayjs';
+import { setStartDate, setEndDate } from '../../features/reportSettings';
 
 export default function Reports() {
-  const valueDatePicker = null;
+  const dispatch = useAppDispatch();
+  const startDate: Dayjs | null = useAppSelector(
+    (state: RootState) => state.reportSettings.startDate,
+  );
+  const endDate: Dayjs | null = useAppSelector(
+    (state: RootState) => state.reportSettings.endDate,
+  );
+
+  const startDateRef = useRef<HTMLDivElement | null>(null);
+  const endDateRef = useRef<HTMLDivElement | null>(null);
+
+  const handleStartDate = (newValue: Dayjs | null) => {
+    dispatch(setStartDate(newValue));
+  };
+
+  const handleEndDate = (newValue: Dayjs | null) => {
+    dispatch(setEndDate(newValue));
+  };
+
   return (
     <>
       <Box
@@ -24,17 +48,21 @@ export default function Reports() {
         </Typography>
         <DatePicker
           label="Start Date"
-          defaultValue={valueDatePicker}
+          defaultValue={startDate}
           slotProps={{
             field: { clearable: true },
           }}
+          onChange={handleStartDate}
+          ref={startDateRef}
         />
         <DatePicker
           label="End Date"
-          defaultValue={valueDatePicker}
+          defaultValue={endDate}
           slotProps={{
             field: { clearable: true },
           }}
+          onChange={handleEndDate}
+          ref={endDateRef}
         />
       </Box>
 
