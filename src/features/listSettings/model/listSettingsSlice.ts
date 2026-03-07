@@ -27,7 +27,7 @@ const initialState: ListSettingsState = {
   searchString: '',
   sort: 'Newest',
   dataPick: null,
-  dataRange: 'Today',
+  dataRange: 'ThisMonth',
   categoryGroceries: false,
   categoryDining: false,
   categoryTransport: false,
