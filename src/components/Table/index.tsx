@@ -276,8 +276,12 @@ export default function StickyHeadTable() {
     rangeFilteredRows.sort((a, b) => a.amount - b.amount);
   }
 
-  const handleChangePage = (newPage: number) => {
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number,
+  ) => {
     setPage(newPage);
+    console.log('Page changed to:', event, newPage);
   };
 
   const handleChangeRowsPerPage = (
