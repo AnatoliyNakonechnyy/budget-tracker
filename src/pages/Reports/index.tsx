@@ -11,7 +11,6 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import type { RootState } from '../../app/store';
 import { Dayjs } from 'dayjs';
 import { useRef } from 'react';
-import dayjs from 'dayjs';
 import { setStartDate, setEndDate } from '../../features/reportSettings';
 
 export default function Reports() {
@@ -99,7 +98,7 @@ export default function Reports() {
         </Card>
       </Box>
       <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ minWidth: 400 }}>
           <CardContent>
             <Typography variant="h5" component="div">
               Spending Trend
@@ -107,7 +106,7 @@ export default function Reports() {
             <BasicLineChart />
           </CardContent>
         </Card>
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ minWidth: 400 }}>
           <CardContent>
             <Typography variant="h5" component="div">
               Category Breakdown
@@ -120,12 +119,12 @@ export default function Reports() {
         Comparision Chart
       </Typography>
       <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ minWidth: 400 }}>
           <CardContent>
             <SimpleBarChart />
           </CardContent>
         </Card>
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ minWidth: 400 }}>
           <CardContent>
             <Typography variant="h5" component="div">
               Monthly Budget
