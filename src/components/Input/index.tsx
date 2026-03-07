@@ -7,7 +7,6 @@ export default function Input({
   errors,
   label,
   type,
-  defaultValue,
 }: {
   name: string;
   control: any;
